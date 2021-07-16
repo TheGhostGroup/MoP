@@ -1,0 +1,40 @@
+dist: xenial
+
+language: cpp
+compiler:
+  - clang
+
+git:
+  depth: 1
+
+compiler:
+  - gcc
+
+addons:
+  apt:
+    packages:
+      - libace-dev    
+      
+services:
+  - mysql
+
+install:
+  #- mysql -uroot -e 'create database test_mysql;'
+  - mkdir bin
+  - cd bin
+  - cmake ../ -DSCRIPTS=1 -DTOOLS=1 -DSCRIPTS="dynamic" -DSERVERS=1 -DNOJEM=1 -DWITH_DYNAMIC_LINKING=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=check_install
+  - cd ..
+
+script:
+  - $CXX --version
+  #- mysql -uroot < sql/create/create_mysql.sql
+  #- mysql -ujadecore -pjadecore auth < sql/base/auth_database.sql
+  #- cat sql/updates/auth/5.4.8/*_auth.sql | mysql -ujadecore -pjadecore auth
+  #- mysql -ujadecore -pjadecore characters < sql/base/characters_database.sql
+  #- cat sql/updates/characters/5.4.8/*_characters.sql | mysql -ujadecore -pjadecore characters
+  #- mysql -ujadecore -pjadecore world < sql/base/dev/world_database.sql
+  #- cat sql/updates/world/5.4.8/*_world.sql | mysql -ujadecore -pjadecore world
+  #- mysql -uroot < sql/create/drop_mysql.sql
+  - cd bin
+  - make -j 8 -k && make install
+  - cd check_install/bin
