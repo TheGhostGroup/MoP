@@ -75,7 +75,7 @@ namespace VMAP
             float iInvScale;
             WorldModel* iModel;
         public:
-            WorldModel* getWorldModel();
+            WorldModel* const getWorldModel();
     };
 } // namespace VMAP
 
