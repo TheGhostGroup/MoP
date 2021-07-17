@@ -1207,7 +1207,7 @@ void World::LoadConfigSettings(bool reload)
     }
 
     // MMap related
-    m_bool_configs[CONFIG_ENABLE_MMAPS] = ConfigMgr::GetBoolDefault("mmap.enablePathFinding", false);
+    m_bool_configs[CONFIG_ENABLE_MMAPS] = ConfigMgr::GetBoolDefault("mmap.enablePathFinding", true);
     sLog->outInfo(LOG_FILTER_SERVER_LOADING, "WORLD: MMap data directory is: %smmaps", m_dataPath.c_str());
 
     m_bool_configs[CONFIG_VMAP_INDOOR_CHECK] = ConfigMgr::GetBoolDefault("vmap.enableIndoorCheck", 0);
