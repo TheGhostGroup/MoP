@@ -89,6 +89,17 @@ void PointMovementGenerator<T>::Reset(T &unit)
     unit.AddUnitState(UNIT_STATE_ROAMING|UNIT_STATE_ROAMING_MOVE);
 }
 
+template<class T>
+void PointMovementGenerator<T>::MovementInform(T & /*unit*/)
+{
+}
+ 
+template <> void PointMovementGenerator<Creature>::MovementInform(Creature &unit)
+{
+    if (unit.AI())
+        unit.AI()->MovementInform(POINT_MOTION_TYPE, id);
+}
+
 template void PointMovementGenerator<Player>::Initialize(Player&);
 template void PointMovementGenerator<Creature>::Initialize(Creature&);
 template void PointMovementGenerator<Player>::Finalize(Player&);

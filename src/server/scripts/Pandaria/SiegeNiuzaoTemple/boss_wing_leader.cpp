@@ -581,7 +581,7 @@ public:
 				if (!(*itr))
 					return;
 
-				(*itr)->GetMotionMaster()->MoveBackward(1, 1834.417725f, 5232.359375f, 131.169464f);
+				//(*itr)->GetMotionMaster()->MoveBackward(1, 1834.417725f, 5232.359375f, 131.169464f);
 			}
 		}
 		void Unload() override
@@ -636,11 +636,11 @@ public:
 				if (!(*itr))
 					return;
 
-				int32 rand = urand(1, 2);
-				if (rand == 1)
-					(*itr)->GetMotionMaster()->MoveBackward(2, 1857.359131f, 5206.055664f, 131.169647f);
-				if (rand == 2)
-					(*itr)->GetMotionMaster()->MoveBackward(2, 1867.288940f, 5203.192871f, 131.169434f);
+				//int32 rand = urand(1, 2);
+				//if (rand == 1)
+				//	(*itr)->GetMotionMaster()->MoveBackward(2, 1857.359131f, 5206.055664f, 131.169647f);
+				//if (rand == 2)
+				//	(*itr)->GetMotionMaster()->MoveBackward(2, 1867.288940f, 5203.192871f, 131.169434f);
 			}
 		}
 		void Unload() override

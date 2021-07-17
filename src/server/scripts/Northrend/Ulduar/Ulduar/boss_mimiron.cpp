@@ -1833,7 +1833,7 @@ class boss_aerial_unit : public CreatureScript
                             Position destination;
                             me->GetPosition(&destination);
                             destination.m_positionZ = 380.04f;
-                            me->GetMotionMaster()->MoveTakeoff(1, destination); // Check if MoveTakeoff is ok here, a flying unit should have a landing animation, but... just 4 the case
+                            me->GetMotionMaster()->MoveTakeoff(1, destination.GetPositionX(), destination.GetPositionY(), destination.GetPositionZ()); // Check if MoveTakeoff is ok here, a flying unit should have a landing animation, but... just 4 the case
                             me->SetReactState(REACT_AGGRESSIVE);
                             return;
                         case EVENT_SUMMON_JUNK_BOT:

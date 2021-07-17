@@ -1768,7 +1768,7 @@ class spell_grasping_energy_tendrils : public SpellScriptLoader
 
                         speedXY = dist * 10.0f / speedZ;
 
-                        target->GetMotionMaster()->CustomJump(x, y, z, speedXY, speedZ);
+                        //target->GetMotionMaster()->CustomJump(x, y, z, speedXY, speedZ);
                     }
                 }
             }

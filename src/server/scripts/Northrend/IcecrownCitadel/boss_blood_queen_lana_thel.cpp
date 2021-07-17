@@ -435,7 +435,7 @@ class boss_blood_queen_lana_thel : public CreatureScript
                             me->SetDisableGravity(true);
                             me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND);
                             me->SetCanFly(true);
-                            me->GetMotionMaster()->MoveTakeoff(POINT_AIR, airPos);
+                            me->GetMotionMaster()->MoveTakeoff(POINT_AIR, airPos.GetPositionX(), airPos.GetPositionY(), airPos.GetPositionZ());
                             break;
                         case EVENT_AIR_FLY_DOWN:
                             me->GetMotionMaster()->MoveLand(POINT_GROUND, centerPos);

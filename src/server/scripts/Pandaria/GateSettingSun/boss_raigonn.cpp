@@ -306,7 +306,7 @@ class boss_raigonn : public CreatureScript
                         // We are going back to main door, restart
                         eventChargeProgress = 0;
                         me->SetSpeed(MOVE_RUN, 0.5f, true);
-                        me->GetMotionMaster()->MoveBackward(POINT_MAIN_DOOR, chargePos[baseMovement + 1].GetPositionX(), chargePos[baseMovement + 1].GetPositionY(), chargePos[baseMovement + 1].GetPositionZ(), 1.0f);
+                        me->GetMotionMaster()->MoveCharge(POINT_MAIN_DOOR, chargePos[baseMovement].GetPositionX(), chargePos[baseMovement].GetPositionY(), chargePos[baseMovement].GetPositionZ(), 84.0f);
                         break;
                 }
             }

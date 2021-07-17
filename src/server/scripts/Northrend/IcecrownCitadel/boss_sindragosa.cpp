@@ -516,7 +516,7 @@ class boss_sindragosa : public CreatureScript
                             Position pos;
                             pos.Relocate(me);
                             pos.m_positionZ += 17.0f;
-                            me->GetMotionMaster()->MoveTakeoff(POINT_TAKEOFF, pos);
+                            me->GetMotionMaster()->MoveTakeoff(POINT_TAKEOFF, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ());
                             break;
                         }
                         case EVENT_AIR_MOVEMENT:

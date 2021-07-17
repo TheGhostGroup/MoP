@@ -478,12 +478,12 @@ public:
                     if (_phase == PHASE_ONE)
                     {
                         _zToLift.m_positionZ += 20.0f;
-                        me->GetMotionMaster()->MoveTakeoff(POINT_LIFT_IN_AIR_P_ONE, _zToLift);
+                        me->GetMotionMaster()->MoveTakeoff(POINT_LIFT_IN_AIR_P_ONE, _zToLift.GetPositionX(), _zToLift.GetPositionY(), _zToLift.GetPositionZ());
                     }
                     else if (_phase == PHASE_TWO)
                     {
                         _zToLift.m_positionZ = 300.1f;
-                        me->GetMotionMaster()->MoveTakeoff(POINT_PHASE_ONE_TO_TWO_TRANSITION, _zToLift);
+                        me->GetMotionMaster()->MoveTakeoff(POINT_PHASE_ONE_TO_TWO_TRANSITION, _zToLift.GetPositionX(), _zToLift.GetPositionY(), _zToLift.GetPositionZ());
                     }
                     break;
                 case ACTION_HANDLE_P_THREE_INTRO:

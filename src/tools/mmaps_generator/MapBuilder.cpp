@@ -325,8 +325,8 @@ namespace MMAP
         //if (tileBits < 1) tileBits = 1;                                     // need at least one bit!
         //int polyBits = sizeof(dtPolyRef)*8 - SALT_MIN_BITS - tileBits;
 
-        int tileBits = DT_TILE_BITS;
-        int polyBits = DT_POLY_BITS;
+        int tileBits = STATIC_TILE_BITS;
+        int polyBits = STATIC_POLY_BITS;
 
         int maxTiles = tiles->size();
         int maxPolysPerTile = 1 << polyBits;
@@ -656,7 +656,7 @@ namespace MMAP
         rcVcopy(params.bmax, bmax);
         params.cs = config.cs;
         params.ch = config.ch;
-        params.tileLayer = VERTEX_PER_MAP;
+        params.tileSize = VERTEX_PER_MAP;
 
         // will hold final navmesh
         unsigned char* navData = NULL;

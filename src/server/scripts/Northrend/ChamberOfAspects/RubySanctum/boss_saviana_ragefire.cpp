@@ -165,7 +165,7 @@ class boss_saviana_ragefire : public CreatureScript
                             Position pos;
                             pos.Relocate(me);
                             pos.m_positionZ += 10.0f;
-                            me->GetMotionMaster()->MoveTakeoff(POINT_TAKEOFF, pos);
+                            me->GetMotionMaster()->MoveTakeoff(POINT_TAKEOFF, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ());
                             events.ScheduleEvent(EVENT_FLIGHT, 50000);
                             events.DelayEvents(12500, EVENT_GROUP_LAND_PHASE);
                             break;
