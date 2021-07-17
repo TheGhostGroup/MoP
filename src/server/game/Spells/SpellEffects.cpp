@@ -2106,24 +2106,26 @@ void Spell::EffectJumpDest(SpellEffIndex effIndex)
         return;
 
     // Init dest coordinates
-    float x, y, z;
+    float x, y, z, o;
     destTarget->GetPosition(x, y, z);
+
+    if (m_spellInfo->Effects[effIndex].TargetA.GetTarget() == TARGET_DEST_TARGET_BACK)
+    {
+        Unit* pTarget = NULL;
+        if (m_targets.GetUnitTarget() && m_targets.GetUnitTarget() != m_caster)
+            pTarget = m_targets.GetUnitTarget();
+        else if (m_caster->getVictim())
+            pTarget = m_caster->getVictim();
+        else if (m_caster->GetTypeId() == TYPEID_PLAYER)
+            pTarget = ObjectAccessor::GetUnit(*m_caster, m_caster->ToPlayer()->GetSelection());
+
+        o = pTarget ? pTarget->GetOrientation() : m_caster->GetOrientation();
+    }
 
     float speedXY, speedZ;
     CalculateJumpSpeeds(effIndex, m_caster->GetExactDist2d(x, y), speedXY, speedZ);
 
-    switch (m_spellInfo->Id)
-    {
-    case 49575: // Death Grip 
-    case 92832: // Leap of Faith
-        m_caster->GetMotionMaster()->CustomJump(x, y, z, speedXY, speedZ);
-        break;
-    case 49376:
-        m_caster->GetMotionMaster()->MoveJump(x, y, z, speedXY, speedZ, destTarget->GetOrientation());
-        break;
-    default:
-        m_caster->GetMotionMaster()->MoveJump(x, y, z, speedXY, speedZ);
-    }
+    m_caster->GetMotionMaster()->MoveJump(x, y, z, speedXY, speedZ, m_spellInfo->Id, o);
 }
 
 void Spell::CalculateJumpSpeeds(uint8 i, float dist, float & speedXY, float & speedZ)
@@ -7904,7 +7906,8 @@ void Spell::EffectCharge(SpellEffIndex /*effIndex*/)
         unitTarget->GetContactPoint(m_caster, pos.m_positionX, pos.m_positionY, pos.m_positionZ);
         unitTarget->GetFirstCollisionPosition(pos, unitTarget->GetObjectSize(), angle);
 
-        m_caster->GetMotionMaster()->MoveCharge(pos.m_positionX, pos.m_positionY, pos.m_positionZ + unitTarget->GetObjectSize());
+        if(!m_caster->GetMotionMaster()->SpellMoveCharge(pos.m_positionX, pos.m_positionY, pos.m_positionZ + unitTarget->GetObjectSize(), SPEED_CHARGE, EVENT_CHARGE, this))
+            return;
 
         if (m_caster->GetTypeId() == TYPEID_PLAYER)
             m_caster->ToPlayer()->SetFallInformation(0, m_caster->GetPositionZ());
@@ -7941,11 +7944,6 @@ void Spell::EffectChargeDest(SpellEffIndex /*effIndex*/)
             float angle = m_caster->GetRelativeAngle(pos.GetPositionX(), pos.GetPositionY());
             float dist = m_caster->GetDistance(pos);
 
-            // Custom MoP Script
-            // Hack Fix - Collision on charge for Clash
-            if (m_spellInfo->Id == 126452)
-                dist /= 2;
-
             m_caster->GetFirstCollisionPosition(pos, dist, angle);
         }
 
@@ -7959,7 +7957,8 @@ void Spell::EffectChargeDest(SpellEffIndex /*effIndex*/)
             }
         }
 
-        m_caster->GetMotionMaster()->MoveCharge(pos.m_positionX, pos.m_positionY, pos.m_positionZ, 42.0f, m_spellValue->EffectBasePoints[0] > 0 ? m_spellInfo->Id : 1003);
+        if(!m_caster->GetMotionMaster()->SpellMoveCharge(pos.m_positionX, pos.m_positionY, pos.m_positionZ))
+            return;
     }
 }
 

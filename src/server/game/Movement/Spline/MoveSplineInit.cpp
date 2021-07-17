@@ -112,10 +112,10 @@ namespace Movement
         //data.append<Vector3>(&spline.getPoint(1), count);
     }
 
-    void MoveSplineInit::Launch()
+    int32 MoveSplineInit::Launch()
     {
         if (&unit == nullptr)
-            return;
+            return 0;
 
         MoveSpline& move_spline = *unit.movespline;
 
@@ -137,7 +137,7 @@ namespace Movement
 
         // should i do the things that user should do? - no.
         if (args.path.empty())
-            return;
+            return 0;
 
         // correct first vertex
         args.path[0] = real_position;
@@ -341,6 +341,8 @@ namespace Movement
         data.WriteByteSeq(moverGUID[4]);
 
         unit.SendMessageToSet(&data, true);
+
+        return move_spline.Duration();
     }
 
     void MoveSplineInit::Stop(bool force)
@@ -408,12 +410,21 @@ namespace Movement
         args.flags.EnableFacingAngle();
     }
 
-    void MoveSplineInit::MoveTo(Vector3 const& dest)
+    void MoveSplineInit::MoveTo(Vector3 const& dest, bool generatePath, bool forceDestination)
     {
-        args.path_Idx_offset = 0;
-        args.path.resize(2);
-        TransportPathTransform transform(unit, args.TransformForTransport);
-        args.path[1] = transform(dest);
+        if (generatePath)
+        {
+            PathFinderMovementGenerator path(&unit);
+            path.calculate(dest.x, dest.y, dest.z, forceDestination);
+            MovebyPath(path.getPath());
+        }
+        else
+        {
+            args.path_Idx_offset = 0;
+            args.path.resize(2);
+            TransportPathTransform transform(unit, args.TransformForTransport);
+            args.path[1] = transform(dest);
+        }
     }
 
     void MoveSplineInit::SetFall()
@@ -426,9 +437,17 @@ namespace Movement
     {
         if (_transformForTransport)
         {
-            float unused = 0.0f;
-            if (TransportBase* transport = _owner.GetDirectTransport())
+            if (Unit* vehicle = _owner.GetVehicleBase())
+            {
+                input.x -= vehicle->GetPositionX();
+                input.y -= vehicle->GetPositionY();
+                input.z -= vehicle->GetPositionZMinusOffset();
+            }
+            else if (Transport* transport = _owner.GetTransport())
+            {
+                float unused = 0.0f;
                 transport->CalculatePassengerOffset(input.x, input.y, input.z, unused);
+            }
 
         }
 
