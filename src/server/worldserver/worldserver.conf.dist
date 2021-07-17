@@ -1,5 +1,5 @@
 ################################################
-# JadeCore World Server configuration file #
+# WarcraftLife World Server configuration file #
 ################################################
 [worldserver]
 
@@ -85,13 +85,13 @@ LogsDir = ""
 #                                                                 section my.ini)
 #                     ".;/path/to/unix_socket;username;password;database" - (use Unix sockets on
 #                                                                           Unix/Linux)
-#        Default:     "127.0.0.1;3306;jadecore;jadecore;auth"       - (LoginDatabaseInfo)
-#                     "127.0.0.1;3306;jadecore;jadecore;world"      - (WorldDatabaseInfo)
-#                     "127.0.0.1;3306;jadecore;jadecore;characters" - (CharacterDatabaseInfo)
+#        Default:     "127.0.0.1;3306;trinity;trinity;auth"       - (LoginDatabaseInfo)
+#                     "127.0.0.1;3306;trinity;trinity;world"      - (WorldDatabaseInfo)
+#                     "127.0.0.1;3306;trinity;trinity;characters" - (CharacterDatabaseInfo)
 
-LoginDatabaseInfo     = "127.0.0.1;3306;jadecore;jadecore;auth"
-WorldDatabaseInfo     = "127.0.0.1;3306;jadecore;jadecore;world"
-CharacterDatabaseInfo = "127.0.0.1;3306;jadecore;jadecore;characters"
+LoginDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;auth"
+WorldDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;world"
+CharacterDatabaseInfo = "127.0.0.1;3306;trinity;trinity;characters"
 
 #
 #    LoginDatabase.WorkerThreads
@@ -1095,7 +1095,7 @@ BeepAtStart = 1
 #        Example:     "Welcome to John\'s Server@This server runs on JadeCore."
 #        Default:     "Welcome to a JadeCore server."
 
-Motd = "Welcome to JadeCore 5.4.8 Mists of Pandaria"
+Motd = "Welcome to server WarcraftLife Mists of Pandaria"
 
 #
 #    Server.LoginInfo

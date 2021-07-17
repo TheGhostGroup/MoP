@@ -100,8 +100,21 @@ extern int main(int argc, char **argv)
     sLog->outInfo(LOG_FILTER_AUTHSERVER, "%s (authserver)", _FULLVERSION);
     sLog->outInfo(LOG_FILTER_AUTHSERVER, "<Ctrl-C> to stop.\n");
     sLog->outInfo(LOG_FILTER_AUTHSERVER, "Using configuration file %s.", cfg_file);
-
     sLog->outWarn(LOG_FILTER_AUTHSERVER, "%s (Library: %s)", OPENSSL_VERSION_TEXT, SSLeay_version(SSLEAY_VERSION));
+
+    sLog->outInfo(LOG_FILTER_AUTHSERVER, " ╔╗╔╗╔╗ ╔══╗ ╔═══╗ ╔══╗ ╔═══╗ ╔══╗ ╔══╗ ╔════╗");
+    sLog->outInfo(LOG_FILTER_AUTHSERVER, " ║║║║║║ ║╔╗║ ║╔═╗║ ║╔═╝ ║╔═╗║ ║╔╗║ ║╔═╝ ╚═╗╔═╝");
+    sLog->outInfo(LOG_FILTER_AUTHSERVER, " ║║║║║║ ║╚╝║ ║╚═╝║ ║║── ║╚═╝║ ║╚╝║ ║╚═╗ ──║║");
+    sLog->outInfo(LOG_FILTER_AUTHSERVER, " ║║║║║║ ║╔╗║ ║╔╗╔╝ ║║── ║╔╗╔╝ ║╔╗║ ║╔═╝ ──║║");
+    sLog->outInfo(LOG_FILTER_AUTHSERVER, " ║╚╝╚╝║ ║║║║ ║║║║─ ║╚═╗ ║║║║─ ║║║║ ║║── ──║║");
+    sLog->outInfo(LOG_FILTER_AUTHSERVER, " ╚═╝╚═╝ ╚╝╚╝ ╚╝╚╝─ ╚══╝ ╚╝╚╝─ ╚╝╚╝ ╚╝── ──╚╝");
+    sLog->outInfo(LOG_FILTER_AUTHSERVER, "            ╔╗── ╔══╗ ╔══╗ ╔═══╗");
+    sLog->outInfo(LOG_FILTER_AUTHSERVER, "            ║║── ╚╗╔╝ ║╔═╝ ║╔══╝");
+    sLog->outInfo(LOG_FILTER_AUTHSERVER, "            ║║── ─║║─ ║╚═╗ ║╚══╗");
+    sLog->outInfo(LOG_FILTER_AUTHSERVER, "            ║║── ─║║─ ║╔═╝ ║╔══╝");
+    sLog->outInfo(LOG_FILTER_AUTHSERVER, "            ║╚═╗ ╔╝╚╗ ║║── ║╚══╗");
+    sLog->outInfo(LOG_FILTER_AUTHSERVER, "            ╚══╝ ╚══╝ ╚╝── ╚═══╝");
+    sLog->outInfo(LOG_FILTER_AUTHSERVER, "   Project WarcraftLife build 547 18019\n");
 
 #if defined (ACE_HAS_EVENT_POLL) || defined (ACE_HAS_DEV_POLL)
     ACE_Reactor::instance(new ACE_Reactor(new ACE_Dev_Poll_Reactor(ACE::max_handles(), 1), 1), true);
