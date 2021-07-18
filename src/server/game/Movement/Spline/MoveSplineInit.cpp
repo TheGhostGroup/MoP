@@ -134,6 +134,9 @@ namespace Movement
         PacketBuilder::WriteMonsterMove(move_spline, data, unit);
         unit.SendMessageToSet(&data, true);
 
+        if(unit.GetUInt32Value(UNIT_NPC_EMOTESTATE))
+            unit.SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
+
         return move_spline.Duration();
     }
 
