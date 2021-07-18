@@ -109,23 +109,22 @@ namespace Movement
 
 
         uint32 moveFlags = unit.m_movementInfo.GetMovementFlags();
+
+        if (args.flags.walkmode)
+            moveFlags |= MOVEMENTFLAG_WALKING;
+        else
+            moveFlags &= ~MOVEMENTFLAG_WALKING;
+
         moveFlags |= MOVEMENTFLAG_FORWARD;
+
+        if (!args.HasVelocity)
+            args.velocity = unit.GetSpeed(SelectSpeedType(moveFlags));
+
+        if (!args.Validate())
+            return 0;
 
         if (moveFlags & MOVEMENTFLAG_ROOT)
             moveFlags &= ~MOVEMENTFLAG_MASK_MOVING;
-
-        if (!args.HasVelocity)
-        {
-            // If spline is initialized with SetWalk method it only means we need to select
-            // walk move speed for it but not add walk flag to unit
-            uint32 moveFlagsForSpeed = moveFlags;
-            if (args.flags.walkmode)
-                moveFlagsForSpeed |= MOVEMENTFLAG_WALKING;
-            else
-                moveFlagsForSpeed &= ~MOVEMENTFLAG_WALKING;
-
-            args.velocity = unit.GetSpeed(SelectSpeedType(moveFlagsForSpeed));
-        }
 
         unit.m_movementInfo.SetMovementFlags(moveFlags);
         move_spline.Initialize(args);
