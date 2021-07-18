@@ -1387,7 +1387,7 @@ void World::SetInitialWorldSettings()
     srand((unsigned int)time(NULL));
 
     ///- Initialize detour memory management
-    //dtAllocSetCustom(dtCustomAlloc, dtCustomFree);
+    dtAllocSetCustom(dtCustomAlloc, dtCustomFree);
 
     ///- Initialize config settings
     LoadConfigSettings();
