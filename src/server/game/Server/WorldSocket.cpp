@@ -944,117 +944,15 @@ int WorldSocket::ProcessIncoming(WorldPacket* new_pct)
 int WorldSocket::HandleSendAuthSession()
 {
     WorldPacket packet(SMSG_AUTH_CHALLENGE, 37);
-    packet << m_Seed;
+    packet << uint16(0);
 
     for (int i = 0; i < 8; i++)
         packet << uint32(0);
 
     packet << uint8(1);
+    packet << uint32(m_Seed);
+
     return SendPacket(&packet);
-}
-
-void WorldSocket::SendAuthResponse(uint8 code, bool queued, uint32 queuePos)
-{
-    const static uint8 ClassExpensions[MAX_CLASSES] = 
-    {
-        0, // CLASS_NONE
-        0, // CLASS_WARRIOR
-        0, // CLASS_PALADIN
-        0, // CLASS_HUNTER
-        0, // CLASS_ROGUE
-        0, // CLASS_PRIEST
-        0, // CLASS_DEATH_KNIGHT
-        0, // CLASS_SHAMAN
-        0, // CLASS_MAGE
-        0, // CLASS_WARLOCK
-        4, // CLASS_MONK
-        0  // CLASS_DRUID
-    };
-
-    WorldPacket packet(SMSG_AUTH_RESPONSE, 80);
-
-    bool hasAccountData = code == AUTH_OK;
-    uint32 realmRaceCount = 15;
-
-    packet.WriteBit(hasAccountData);
-
-    if (hasAccountData)
-    {
-        packet.WriteBits(0, 21);
-        packet.WriteBit(0);
-        packet.WriteBits(realmRaceCount, 23);
-        packet.WriteBits(0, 21);
-        packet.WriteBit(0);
-        packet.WriteBits(MAX_CLASSES - 1, 23);
-        packet.WriteBit(0);
-        packet.WriteBit(0);
-        packet.WriteBit(0);
-    }
-
-    packet.WriteBit(queued);
-    if (queued)
-        packet.WriteBit(false);
-
-    packet.FlushBits();
-    
-    if (queued)
-        packet << uint32(queuePos);                            // Unknown
-
-    if (hasAccountData)
-    {
-        for (uint32 i = 1; i < MAX_CLASSES; ++i)
-        {
-            packet << uint8(ClassExpensions[i]); // expension
-            packet << uint8(i);                  // class
-        }
-
-        packet << uint8(Expansion());
-
-        packet << uint8(0);
-        packet << uint8(RACE_HUMAN);
-        packet << uint8(0);
-        packet << uint8(RACE_ORC);
-        packet << uint8(0);
-        packet << uint8(RACE_DWARF);
-        packet << uint8(0);
-        packet << uint8(RACE_NIGHTELF);
-        packet << uint8(0);
-        packet << uint8(RACE_UNDEAD_PLAYER);
-        packet << uint8(0);
-        packet << uint8(RACE_TAUREN);
-        packet << uint8(0);
-        packet << uint8(RACE_GNOME);
-        packet << uint8(0);
-        packet << uint8(RACE_TROLL);
-        packet << uint8(1);
-        packet << uint8(RACE_GOBLIN);
-        packet << uint8(1);
-        packet << uint8(RACE_BLOODELF);
-        packet << uint8(1);
-        packet << uint8(RACE_DRAENEI);
-        packet << uint8(1);
-        packet << uint8(RACE_WORGEN);
-        packet << uint8(1);
-        packet << uint8(RACE_PANDAREN_NEUTRAL);
-        packet << uint8(1);
-        packet << uint8(RACE_PANDAREN_ALLI);
-        packet << uint8(1);
-        packet << uint8(RACE_PANDAREN_HORDE);
-
-        packet << uint32(Expansion());
-        
-        packet << uint32(0);
-        packet << uint32(0);
-        packet << uint32(0);
-        packet << uint32(0);
-
-        packet << uint8(Expansion());
-        packet << uint32(0);
-    }
-
-    packet << uint8(code);
-
-    SendPacket(&packet);
 }
 
 int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
@@ -1072,48 +970,48 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
     WorldPacket addonsData;
     bool isPremium = false;
 
-    // TEMP! Digest fails to verify, incorrect?
-    recvPacket.read<uint32>();
-    recvPacket.read<uint32>();
-    recvPacket >> digest[4];
-    recvPacket >> digest[13];
-    recvPacket >> digest[3];
-    recvPacket >> digest[8];
-    recvPacket.read<uint32>();
-    recvPacket >> digest[12];
+    recvPacket.read_skip<uint32>();
+    recvPacket.read_skip<uint32>();
     recvPacket >> digest[18];
-    recvPacket >> digest[15];
-    recvPacket >> digest[5];
-    recvPacket.read<uint64>();
-    recvPacket >> digest[11];
-    recvPacket.read<uint32>();
-    recvPacket >> digest[7];
-    recvPacket >> digest[19];
-    recvPacket >> digest[16];
     recvPacket >> digest[14];
+    recvPacket >> digest[3];
+    recvPacket >> digest[4];
     recvPacket >> digest[0];
-    recvPacket >> digest[9];
-    recvPacket >> clientBuild;
-    recvPacket >> digest[1];
-    recvPacket.read<uint8>();
-    recvPacket >> digest[17];
-    recvPacket >> digest[10];
-    recvPacket >> digest[6];
-    recvPacket >> digest[2];
-    recvPacket.read<uint8>();
+    recvPacket.read_skip<uint32>();
+    recvPacket >> digest[11];
     recvPacket >> clientSeed;
+    recvPacket >> digest[19];
+    recvPacket.read_skip<uint8>();
+    recvPacket.read_skip<uint8>();
+    recvPacket >> digest[2];
+    recvPacket >> digest[9];
+    recvPacket >> digest[12];
+    recvPacket.read_skip<uint64>();
+    recvPacket.read_skip<uint32>();
+    recvPacket >> digest[16];
+    recvPacket >> digest[5];
+    recvPacket >> digest[6];
+    recvPacket >> digest[8];
+    recvPacket >> clientBuild;
+    recvPacket >> digest[17];
+    recvPacket >> digest[7];
+    recvPacket >> digest[13];
+    recvPacket >> digest[15];
+    recvPacket >> digest[1];
+    recvPacket >> digest[10];
     recvPacket >> addonSize;
 
     addonsData.resize(addonSize);
     recvPacket.read((uint8*)addonsData.contents(), addonSize);
 
-    uint32 accountNameLength = recvPacket.ReadBits(11);
     recvPacket.ReadBit();
+    uint32 accountNameLength = recvPacket.ReadBits(11);
+
     account = recvPacket.ReadString(accountNameLength);
 
     if (sWorld->IsClosed())
     {
-        SendAuthResponse(AUTH_REJECT, false, 0);
+        SendAuthResponseError(AUTH_REJECT);
         sLog->outError(LOG_FILTER_NETWORKIO, "WorldSocket::HandleAuthSession: World closed, denying client (%s).", GetRemoteAddress().c_str());
         return -1;
     }
@@ -1130,7 +1028,7 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
     // Stop if the account is not found
     if (!result)
     {
-        SendAuthResponse(AUTH_UNKNOWN_ACCOUNT, false, 0);
+        SendAuthResponseError(AUTH_UNKNOWN_ACCOUNT);
         sLog->outError(LOG_FILTER_NETWORKIO, "WorldSocket::HandleAuthSession: Sent Auth Response (unknown account).");
         return -1;
     }
@@ -1151,7 +1049,7 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
     {
         if (strcmp (fields[2].GetCString(), GetRemoteAddress().c_str()))
         {
-            SendAuthResponse(AUTH_FAILED, false, 0);
+            SendAuthResponseError(AUTH_FAILED);
             sLog->outDebug(LOG_FILTER_NETWORKIO, "WorldSocket::HandleAuthSession: Sent Auth Response (Account IP differs).");
             return -1;
         }
@@ -1214,7 +1112,7 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
 
     if (banresult) // if account banned
     {
-        SendAuthResponse(AUTH_BANNED, false, 0);
+        SendAuthResponseError(AUTH_BANNED);
         sLog->outError(LOG_FILTER_NETWORKIO, "WorldSocket::HandleAuthSession: Sent Auth Response (Account banned).");
         return -1;
     }
@@ -1235,7 +1133,7 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
     sLog->outDebug(LOG_FILTER_NETWORKIO, "Allowed Level: %u Player Level %u", allowedAccountType, AccountTypes(security));
     if (allowedAccountType > SEC_PLAYER && AccountTypes(security) < allowedAccountType)
     {
-        SendAuthResponse(AUTH_UNAVAILABLE, false, 0);
+        SendAuthResponseError(AUTH_UNAVAILABLE);
         sLog->outInfo(LOG_FILTER_NETWORKIO, "WorldSocket::HandleAuthSession: User tries to login but his security level is not enough");
         return -1;
     }
@@ -1380,4 +1278,13 @@ int WorldSocket::HandlePing(WorldPacket& recvPacket)
     WorldPacket packet(SMSG_PONG, 4);
     packet << ping;
     return SendPacket(&packet);
+}
+
+void WorldSocket::SendAuthResponseError(uint8 code)
+{
+        WorldPacket packet(SMSG_AUTH_RESPONSE, 1);
+        packet.WriteBit(0); // has account info
+        packet.WriteBit(0); // has queue info
+        packet << uint8(code);
+        SendPacket(&packet);
 }
