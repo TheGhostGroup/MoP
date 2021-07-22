@@ -337,7 +337,7 @@ int Master::Run()
     sLog->outInfo(LOG_FILTER_WORLDSERVER, "            ║║── ─║║─ ║╔═╝ ║╔══╝");
     sLog->outInfo(LOG_FILTER_WORLDSERVER, "            ║╚═╗ ╔╝╚╗ ║║── ║╚══╗");
     sLog->outInfo(LOG_FILTER_WORLDSERVER, "            ╚══╝ ╚══╝ ╚╝── ╚═══╝");
-    sLog->outInfo(LOG_FILTER_WORLDSERVER, "   Project WarcraftLife build 547 18019\n");
+    sLog->outInfo(LOG_FILTER_WORLDSERVER, "   Project WarcraftLife build 548 18414\n");
 
     /// worldserver PID file creation
     std::string pidfile = ConfigMgr::GetStringDefault("PidFile", "");

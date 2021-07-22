@@ -114,7 +114,7 @@ extern int main(int argc, char **argv)
     sLog->outInfo(LOG_FILTER_AUTHSERVER, "            ║║── ─║║─ ║╔═╝ ║╔══╝");
     sLog->outInfo(LOG_FILTER_AUTHSERVER, "            ║╚═╗ ╔╝╚╗ ║║── ║╚══╗");
     sLog->outInfo(LOG_FILTER_AUTHSERVER, "            ╚══╝ ╚══╝ ╚╝── ╚═══╝");
-    sLog->outInfo(LOG_FILTER_AUTHSERVER, "   Project WarcraftLife build 547 18019\n");
+    sLog->outInfo(LOG_FILTER_AUTHSERVER, "   Project WarcraftLife build 548 18414\n");
 
 #if defined (ACE_HAS_EVENT_POLL) || defined (ACE_HAS_DEV_POLL)
     ACE_Reactor::instance(new ACE_Reactor(new ACE_Dev_Poll_Reactor(ACE::max_handles(), 1), 1), true);

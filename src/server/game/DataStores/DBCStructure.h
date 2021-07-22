@@ -2263,7 +2263,7 @@ struct SpellMiscEntry
 {
     uint32    Id;                                           // 0        m_ID
     uint32    SpellId;                                      // 1        m_spellId
-    //uint32 Unknown;                                       // 2        5.0.1.15589
+    //uint32    SpellDifficultyID;                          // 2        m_spellDifficultyID
     uint32    Attributes;                                   // 3        m_attribute
     uint32    AttributesEx;                                 // 4        m_attributesEx
     uint32    AttributesEx2;                                // 5        m_attributesExB
