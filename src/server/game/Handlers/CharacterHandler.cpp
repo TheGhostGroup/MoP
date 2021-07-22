@@ -235,15 +235,9 @@ bool LoginQueryHolder::Initialize()
 
 void WorldSession::HandleCharEnum(PreparedQueryResult result)
 {
-    WorldPacket data(SMSG_CHAR_ENUM);
-
-    uint32 unkCount = 0;
     uint32 charCount = 0;
     ByteBuffer bitBuffer;
     ByteBuffer dataBuffer;
-
-    bitBuffer.WriteBit(1); // Must send 1, else receive CHAR_LIST_FAILED error
-    bitBuffer.WriteBits(unkCount, 21); // unk uint32 count
 
     if (result)
     {
@@ -251,6 +245,10 @@ void WorldSession::HandleCharEnum(PreparedQueryResult result)
 
         charCount = uint32(result->GetRowCount());
         
+        bitBuffer.reserve(24 * charCount / 8);
+        dataBuffer.reserve(charCount * 381);
+
+        bitBuffer.WriteBits(0, 21); // factionChangeRestrictions - raceId / mask loop
         bitBuffer.WriteBits(charCount, 16);
 
         do
@@ -265,11 +263,19 @@ void WorldSession::HandleCharEnum(PreparedQueryResult result)
             _allowedCharsToLogin.insert(guidLow);
         }
         while (result->NextRow());
+
+        bitBuffer.WriteBit(1); // Sucess
+        bitBuffer.FlushBits();
     }
     else
+    {
+        bitBuffer.WriteBits(0, 21);
         bitBuffer.WriteBits(0, 16);
+        bitBuffer.WriteBit(1); // Success
+        bitBuffer.FlushBits();
+    }
 
-    bitBuffer.FlushBits();
+    WorldPacket data(SMSG_CHAR_ENUM, 7 + bitBuffer.size() + dataBuffer.size());
 
     data.append(bitBuffer);
     if (dataBuffer.size())
@@ -312,15 +318,8 @@ void WorldSession::HandleCharCreateOpcode(WorldPacket& recvData)
 
     outfitId = 0;
 
-    recvData >> outfitId;
-    recvData >> facialHair;
-    recvData >> skin;
-    recvData >> race_;
-    recvData >> hairStyle;
-    recvData >> class_;
-    recvData >> face;
-    recvData >> gender;
-    recvData >> hairColor;
+    recvData >> outfitId >> hairStyle >> class_ >> skin;
+    recvData >> face >> race_ >> facialHair >> gender >> hairColor;
 
     uint32 name_length = recvData.ReadBits(6);
     bool unkBit = recvData.ReadBit();
@@ -748,22 +747,22 @@ void WorldSession::HandleCharDeleteOpcode(WorldPacket& recvData)
 {
     ObjectGuid charGuid;
 
-    charGuid[6] = recvData.ReadBit();
-    charGuid[4] = recvData.ReadBit();
-    charGuid[5] = recvData.ReadBit();
     charGuid[1] = recvData.ReadBit();
-    charGuid[7] = recvData.ReadBit();
     charGuid[3] = recvData.ReadBit();
     charGuid[2] = recvData.ReadBit();
+    charGuid[7] = recvData.ReadBit();
+    charGuid[4] = recvData.ReadBit();
+    charGuid[6] = recvData.ReadBit();
     charGuid[0] = recvData.ReadBit();
+    charGuid[5] = recvData.ReadBit();
 
+    recvData.ReadByteSeq(charGuid[7]);
     recvData.ReadByteSeq(charGuid[1]);
-    recvData.ReadByteSeq(charGuid[2]);
+    recvData.ReadByteSeq(charGuid[6]);
+    recvData.ReadByteSeq(charGuid[0]);
     recvData.ReadByteSeq(charGuid[3]);
     recvData.ReadByteSeq(charGuid[4]);
-    recvData.ReadByteSeq(charGuid[0]);
-    recvData.ReadByteSeq(charGuid[7]);
-    recvData.ReadByteSeq(charGuid[6]);
+    recvData.ReadByteSeq(charGuid[2]);
     recvData.ReadByteSeq(charGuid[5]);
 
     // can't delete loaded character
@@ -842,10 +841,10 @@ void WorldSession::HandlePlayerLoginOpcode(WorldPacket& recvData)
     float farClip = 0.0f;
     recvData >> farClip;
 
-    uint8 bitOrder[8] = { 7, 6, 0, 4, 5, 2, 3, 1 };
+    uint8 bitOrder[8] = { 1, 4, 7, 3, 2, 6, 5, 0 };
     recvData.ReadBitInOrder(playerGuid, bitOrder);
 
-    uint8 byteOrder[8] = { 5, 0, 1, 6, 7, 2, 3, 4 };
+    uint8 byteOrder[8] = { 5, 1, 0, 6, 2, 4, 7, 3 };
     recvData.ReadBytesSeq(playerGuid, byteOrder);
 
     sLog->outDebug(LOG_FILTER_NETWORKIO, "Character (Guid: %u) logging in", GUID_LOPART(playerGuid));

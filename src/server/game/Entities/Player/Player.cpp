@@ -2445,55 +2445,46 @@ bool Player::BuildEnumData(PreparedQueryResult result, ByteBuffer* dataBuffer, B
     // Packet content flags
     bitBuffer->WriteBit(guildGuid[4]);
     bitBuffer->WriteBit(guid[0]);
-    bitBuffer->WriteBit(guid[3]);
-    bitBuffer->WriteBit(guid[6]);
-    bitBuffer->WriteBit(guildGuid[1]);
-    bitBuffer->WriteBit(guid[1]);
-    bitBuffer->WriteBit(guildGuid[2]);
     bitBuffer->WriteBit(guildGuid[3]);
-    bitBuffer->WriteBit(atLoginFlags & AT_LOGIN_FIRST);
-    bitBuffer->WriteBit(guid[2]);
-    bitBuffer->WriteBit(guildGuid[0]);
-    bitBuffer->WriteBit(guildGuid[7]);
-    bitBuffer->WriteBits(uint32(name.length()), 6);
-    bitBuffer->WriteBit(0); // Has Been boosted to level 90
-    bitBuffer->WriteBit(guildGuid[6]);
-    bitBuffer->WriteBit(guid[4]);
-    bitBuffer->WriteBit(guildGuid[5]);
-    bitBuffer->WriteBit(guid[5]);
+    bitBuffer->WriteBit(guid[3]);
     bitBuffer->WriteBit(guid[7]);
+    bitBuffer->WriteBit(0); // Can boost
+    bitBuffer->WriteBit(atLoginFlags & AT_LOGIN_FIRST);
+    bitBuffer->WriteBit(guid[6]);
+    bitBuffer->WriteBit(guildGuid[6]);
+    bitBuffer->WriteBits(uint32(name.length()), 6);
+    bitBuffer->WriteBit(guid[1]);
+    bitBuffer->WriteBit(guildGuid[1]);
+    bitBuffer->WriteBit(guildGuid[0]);
+    bitBuffer->WriteBit(guid[4]);
+    bitBuffer->WriteBit(guildGuid[7]);
+    bitBuffer->WriteBit(guid[2]);
+    bitBuffer->WriteBit(guid[5]);
+    bitBuffer->WriteBit(guildGuid[2]);
+    bitBuffer->WriteBit(guildGuid[5]);
 
     // Character data
-    *dataBuffer << uint8(face);                                 // Face
+    *dataBuffer << uint32(0);                                   // UNK02 - might be swaped with UNK03
 
-    dataBuffer->WriteByteSeq(guildGuid[7]);
+    dataBuffer->WriteByteSeq(guid[1]);
 
-    *dataBuffer << uint8(playerRace);                           // Race
-
-    dataBuffer->WriteByteSeq(guid[5]);
-    dataBuffer->WriteByteSeq(guildGuid[2]);
-    dataBuffer->WriteByteSeq(guid[6]);
-   
-    *dataBuffer << uint32(charFlags);                           // Character flags
-    *dataBuffer << uint32(zone);                                // Zone id
-    
-    dataBuffer->WriteByteSeq(guildGuid[3]);
-    
-    *dataBuffer << uint32(petLevel);                            // Pet level
-    *dataBuffer << uint32(petDisplayId);                        // Pet DisplayID
-    *dataBuffer << uint32(0);
-    *dataBuffer << uint32(0);                                   // UNK02 - might be swaped with UNK03 and the pet fields 
-    
-    dataBuffer->WriteByteSeq(guid[3]);
-    dataBuffer->WriteByteSeq(guid[0]);
-
-    *dataBuffer << uint8(facialHair);                           // Facial hair
-    *dataBuffer << uint8(gender);                               // Gender
-    
-    dataBuffer->WriteByteSeq(guildGuid[0]);
-    
+    *dataBuffer << uint8(slot);                                 // List order
     *dataBuffer << uint8(hairStyle);                            // Hair style
-    *dataBuffer << uint8(level);                                // Level
+
+    dataBuffer->WriteByteSeq(guildGuid[2]);
+    dataBuffer->WriteByteSeq(guildGuid[0]);
+    dataBuffer->WriteByteSeq(guildGuid[6]);
+
+    dataBuffer->append(name.c_str(), name.length());            // Name
+
+    dataBuffer->WriteByteSeq(guildGuid[3]);
+
+    *dataBuffer << float(x);                                    // X
+    *dataBuffer << uint32(0);                                   // UNK00 new field - Boost fieldand the pet fields
+    *dataBuffer << uint8(face);                                 // Face
+    *dataBuffer << uint8(playerClass);                          // Class
+
+    dataBuffer->WriteByteSeq(guildGuid[5]);
 
     for (uint8 slot = 0; slot < INVENTORY_SLOT_BAG_END; ++slot)
     {
@@ -2524,43 +2515,52 @@ bool Player::BuildEnumData(PreparedQueryResult result, ByteBuffer* dataBuffer, B
                 break;
         }
         
-        *dataBuffer << uint32(proto->DisplayInfoID);
         *dataBuffer << uint32(enchant ? enchant->aura_id : 0);
         *dataBuffer << uint8(proto->InventoryType);
+        *dataBuffer << uint32(proto->DisplayInfoID);
     }
 
-    
-    *dataBuffer << float(z);                                    // Z
-    
+    *dataBuffer << uint32(customizationFlag);                   // Character customization flags
+
+    dataBuffer->WriteByteSeq(guid[3]);
+    dataBuffer->WriteByteSeq(guid[5]);
+
+    *dataBuffer << uint32(petFamily);                           // Pet family
+
+    dataBuffer->WriteByteSeq(guildGuid[4]);
+
+    *dataBuffer << uint32(mapId);                               // Map Id
+    *dataBuffer << uint8(playerRace);                           // Race
+    *dataBuffer << uint8(skin);                                 // Skin
+
     dataBuffer->WriteByteSeq(guildGuid[1]);
 
-    *dataBuffer << float(y);                                    // Y
-    *dataBuffer << uint8(skin);                                 // Skin
-    *dataBuffer << uint8(slot);                                 // List order
-    
-    dataBuffer->WriteByteSeq(guildGuid[5]);
-    dataBuffer->WriteByteSeq(guid[1]);
-    
-    *dataBuffer << uint32(0);                                   // UNK03 - might be swaped with UNK02 and the pet fields 
-    *dataBuffer << float(x);                                    // X
+    *dataBuffer << uint8(level);                                // Level
 
-    if (name.length())
-        dataBuffer->append(name.c_str(), name.length());        // Name
-    
-    *dataBuffer << uint32(mapId);                               // Map Id
-    *dataBuffer << uint32(petFamily);                           // Pet family
-    
-    *dataBuffer << uint8(hairColor);                            // Hair color
-    *dataBuffer << uint8(playerClass);                          // Class
-    
-    dataBuffer->WriteByteSeq(guildGuid[4]);
+    dataBuffer->WriteByteSeq(guid[0]);
     dataBuffer->WriteByteSeq(guid[2]);
-    
-    *dataBuffer << uint32(customizationFlag);
-    
-    dataBuffer->WriteByteSeq(guid[7]);
-    dataBuffer->WriteByteSeq(guildGuid[6]);
+
+    *dataBuffer << uint8(hairColor);                            // Hair color
+    *dataBuffer << uint8(gender);                               // Gender
+    *dataBuffer << uint8(facialHair);                           // Facial hair
+
+    *dataBuffer << uint32(petLevel);                            // Pet level
+
     dataBuffer->WriteByteSeq(guid[4]);
+    dataBuffer->WriteByteSeq(guid[7]);
+
+    *dataBuffer << float(y);                                    // Y
+    *dataBuffer << uint32(petDisplayId);                        // Pet DisplayID
+    *dataBuffer << uint32(0);                                   // UNK03 - might be swaped with UNK02 and the pet fields
+
+    dataBuffer->WriteByteSeq(guid[6]);
+
+    *dataBuffer << uint32(charFlags);                           // Character flags
+    *dataBuffer << uint32(zone);                                // Zone id
+
+    dataBuffer->WriteByteSeq(guildGuid[7]);
+
+    *dataBuffer << float(z);                                    // Z
 
     return true;
 }
