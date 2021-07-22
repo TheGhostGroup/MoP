@@ -1,3 +1,7 @@
+## project
++ JadeCore based update 548 18414
++ works auth and characters menu
+
 ## Requirements
 
 + Platform: Linux (Ubuntu 16.04), Windows
